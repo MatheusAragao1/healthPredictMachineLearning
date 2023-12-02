@@ -25,12 +25,13 @@ from enum import Enum
 class ModelTypeEnum(Enum):
     RANDOMFORESTCLASSIFIER = 1
     DECISIONTREECLASSIFIER = 2
+    KNEIGHBORSCLASSIFIER = 3
 
 seedNumber = 42
 
 np.random.seed(seedNumber)
 
-modelType = ModelTypeEnum.RANDOMFORESTCLASSIFIER
+modelType = ModelTypeEnum.KNEIGHBORSCLASSIFIER
 
 rf_param_grid = {
     'n_estimators': [100, 200, 300, 400],
@@ -41,14 +42,11 @@ rf_param_grid = {
     'bootstrap': [True, False]
 }
 
-xgb_param_grid = {
-    'n_estimators': [100, 200, 300, 400],
-    'max_depth': [3, 5, 7, 9],
-    'learning_rate': [0.01, 0.1, 0.2],
-    'subsample': [0.8, 0.9, 1.0],
-    'colsample_bytree': [0.8, 0.9, 1.0],
-    'gamma': [0, 0.1, 0.2],
-    'min_child_weight': [1, 3, 5]
+param_dist_knn = {
+    'n_neighbors': np.arange(1, 20, 1),
+    'weights': ['uniform', 'distance'], 
+    'algorithm': ['auto', 'ball_tree', 'kd_tree', 'brute'],
+    'p': [1, 2],
 }
 
 param_dist_decision = {
@@ -100,7 +98,7 @@ def getParamGrid():
     elif modelType == ModelTypeEnum.DECISIONTREECLASSIFIER:
         return param_dist_decision
     else:
-        return rf_param_grid
+        return param_dist_knn
 
 def plotCorrelationMatrix(data):
     font = {'size'   : 4}
@@ -165,7 +163,7 @@ def defineModelType(modelType):
     elif modelType == ModelTypeEnum.DECISIONTREECLASSIFIER:
         model = DecisionTreeClassifier(random_state=seedNumber)
     else:
-        model.RandomForestRegressor() 
+        model = KNeighborsClassifier() 
     return model
 
 def main():
@@ -210,7 +208,8 @@ def main():
     print(f"The best parameters found are: {model.best_params_}")
 
     #Plot Feature importances
-    plotFeatureImportances(best_model, x)
+    if(modelType != ModelTypeEnum.KNEIGHBORSCLASSIFIER):
+        plotFeatureImportances(best_model, x)
 
     # Plot correlation matrix
     plotCorrelationMatrix(dataset)
