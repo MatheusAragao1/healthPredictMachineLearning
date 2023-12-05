@@ -21,17 +21,19 @@ import onnxmltools.convert.common.data_types
 import joblib
 from sklearn.tree import DecisionTreeClassifier
 from enum import Enum
+from sklearn.naive_bayes import GaussianNB
  
 class ModelTypeEnum(Enum):
     RANDOMFORESTCLASSIFIER = 1
     DECISIONTREECLASSIFIER = 2
     KNEIGHBORSCLASSIFIER = 3
+    NAIVEBAYES = 4
 
 seedNumber = 42
 
 np.random.seed(seedNumber)
 
-modelType = ModelTypeEnum.KNEIGHBORSCLASSIFIER
+modelType = ModelTypeEnum.NAIVEBAYES
 
 rf_param_grid = {
     'n_estimators': [100, 200, 300, 400],
@@ -57,6 +59,10 @@ param_dist_decision = {
     'min_samples_leaf': np.arange(1, 11),
     'min_impurity_decrease': [0.0] + list(np.arange(0.01, 0.1, 0.01)),
     'class_weight': [None, 'balanced']  
+}
+
+param_dist_naive = {
+    'var_smoothing': np.logspace(-10, -1, 1000)
 }
 
 def plot_class_distribution(y_train, y_train_resampled):
@@ -97,6 +103,8 @@ def getParamGrid():
         return rf_param_grid
     elif modelType == ModelTypeEnum.DECISIONTREECLASSIFIER:
         return param_dist_decision
+    elif modelType == ModelTypeEnum.NAIVEBAYES:
+        return param_dist_naive
     else:
         return param_dist_knn
 
@@ -162,6 +170,8 @@ def defineModelType(modelType):
         model = RandomForestClassifier(random_state=seedNumber)
     elif modelType == ModelTypeEnum.DECISIONTREECLASSIFIER:
         model = DecisionTreeClassifier(random_state=seedNumber)
+    elif modelType == ModelTypeEnum.NAIVEBAYES:
+        model = GaussianNB()
     else:
         model = KNeighborsClassifier() 
     return model
@@ -208,7 +218,7 @@ def main():
     print(f"The best parameters found are: {model.best_params_}")
 
     #Plot Feature importances
-    if(modelType != ModelTypeEnum.KNEIGHBORSCLASSIFIER):
+    if(modelType != ModelTypeEnum.KNEIGHBORSCLASSIFIER and modelType != ModelTypeEnum.NAIVEBAYES):
         plotFeatureImportances(best_model, x)
 
     # Plot correlation matrix
