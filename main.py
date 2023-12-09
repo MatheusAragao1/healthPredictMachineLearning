@@ -2,23 +2,14 @@ import numpy as np
 import pandas as pd
 import sklearn
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import train_test_split, cross_val_score, StratifiedKFold, RandomizedSearchCV, GridSearchCV, KFold
-from sklearn.ensemble import RandomForestRegressor, ExtraTreesClassifier, RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split, cross_val_score, StratifiedKFold, RandomizedSearchCV
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import OrdinalEncoder, OneHotEncoder, LabelEncoder
-from sklearn.compose import ColumnTransformer
 from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, classification_report
-from imblearn.over_sampling import RandomOverSampler
 import matplotlib.pyplot as plt
 from imblearn.over_sampling import SMOTE
 from sklearn.impute import KNNImputer
-import xgboost
-from xgboost import XGBClassifier
-import onnxmltools
-from onnxmltools.convert.xgboost.operator_converters.XGBoost import convert_xgboost
-import onnxmltools.convert.common.data_types
-import joblib
 from sklearn.tree import DecisionTreeClassifier
 from enum import Enum
 from sklearn.naive_bayes import GaussianNB
@@ -33,7 +24,9 @@ seedNumber = 42
 
 np.random.seed(seedNumber)
 
-modelType = ModelTypeEnum.NAIVEBAYES
+modelType = ModelTypeEnum.RANDOMFORESTCLASSIFIER
+
+withSmote = False
 
 rf_param_grid = {
     'n_estimators': [100, 200, 300, 400],
@@ -191,9 +184,13 @@ def main():
     # Splitting dataset
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.3, random_state=seedNumber)
 
+    x_train_resampled, y_train_resampled = x_train, y_train
+
     # Oversampling with Smote 
-    sm = SMOTE(k_neighbors=5, sampling_strategy='auto')
-    x_train_resampled, y_train_resampled = sm.fit_resample(x_train, y_train)
+    if(withSmote):
+        sm = SMOTE(k_neighbors=5, sampling_strategy='auto')
+        x_train_resampled, y_train_resampled = sm.fit_resample(x_train, y_train)
+
 
     plot_class_distribution(y_train, y_train_resampled)
 
