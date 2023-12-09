@@ -13,6 +13,7 @@ from sklearn.impute import KNNImputer
 from sklearn.tree import DecisionTreeClassifier
 from enum import Enum
 from sklearn.naive_bayes import GaussianNB
+from sklearn import preprocessing
  
 class ModelTypeEnum(Enum):
     RANDOMFORESTCLASSIFIER = 1
@@ -24,7 +25,7 @@ seedNumber = 42
 
 np.random.seed(seedNumber)
 
-modelType = ModelTypeEnum.RANDOMFORESTCLASSIFIER
+modelType = ModelTypeEnum.NAIVEBAYES
 
 withSmote = False
 
@@ -181,8 +182,10 @@ def main():
 
     # plot_nas(dataset)
 
+    normalized_x = preprocessing.normalize(x)
+
     # Splitting dataset
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.3, random_state=seedNumber)
+    x_train, x_test, y_train, y_test = train_test_split(normalized_x, y, test_size = 0.3, random_state=seedNumber)
 
     x_train_resampled, y_train_resampled = x_train, y_train
 
