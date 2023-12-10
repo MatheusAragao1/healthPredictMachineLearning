@@ -2,7 +2,7 @@
 ![image](https://github.com/MatheusAragao1/healthPredictMachineLearning/assets/53318141/fbf77e5c-cb31-4b17-9d2a-525dc18f8c76)
 
 # Metodologia utilizada
-![image](https://github.com/MatheusAragao1/healthPredictMachineLearning/assets/53318141/25392c82-c883-42e1-9106-9420be2e3197)
+![image](https://github.com/MatheusAragao1/healthPredictMachineLearning/assets/53318141/6717db49-173f-4c87-b50c-019c97e4e442)
 
 # Matriz de correlação de Pearson
 ![image](https://github.com/MatheusAragao1/healthPredictMachineLearning/assets/53318141/fa64ab3b-eb66-43ee-9a33-9d1ff5c60bdf)
