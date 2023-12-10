@@ -27,7 +27,7 @@ np.random.seed(seedNumber)
 
 modelType = ModelTypeEnum.NAIVEBAYES
 
-withSmote = False
+withSmote = True
 
 rf_param_grid = {
     'n_estimators': [100, 200, 300, 400],
@@ -181,8 +181,8 @@ def main():
     y = enc.fit_transform(y)
 
     # plot_nas(dataset)
-
-    normalized_x = preprocessing.normalize(x)
+    normalized_x = x / np.linalg.norm(x, axis=0)
+    print(pd.DataFrame(normalized_x, columns=x.columns))
 
     # Splitting dataset
     x_train, x_test, y_train, y_test = train_test_split(normalized_x, y, test_size = 0.3, random_state=seedNumber)
@@ -202,6 +202,7 @@ def main():
 
     model = RandomizedSearchCV(
         baseModel,
+        scoring="accuracy",
         param_distributions= getParamGrid(),
         n_iter=50,
         cv=StratifiedKFold(n_splits=10),
